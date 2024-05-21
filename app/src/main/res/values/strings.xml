@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Projeto Integrador 3</string>
+    <string name="googlemaps_apikey">AIzaSyAmcV3Bj1cHo7DryxQ-zOYKZW7uOpk3oCE</string>
+
+    <string name="qr_code">QR Code</string>
+    <string name="qr_code_info">Informações da Locação</string>
+</resources>

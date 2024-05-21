@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#121212"
+            android:padding="16dp">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+        <TextView
+                android:id="@+id/tvStatus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Detalhes da Locação"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:gravity="left"
+                android:layout_marginBottom="16dp" />
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/rounded_corner"
+                android:padding="16dp"
+                android:layout_marginBottom="16dp"
+        android:layout_marginTop="20dp">
+
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="#FFFFFF"
+                    android:text="Dados do usuário" />
+
+            <TextView
+                    android:id="@+id/tvNomeUsuario"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="#FFFFFF"
+                    android:text="Nome do Usuário"
+            android:layout_marginTop="20dp"/>
+
+            <TextView
+                    android:id="@+id/tvCelularUsuario"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:textColor="#B0B0B0"
+                    android:layout_marginTop="8dp"
+                    android:text="Celular do Usuário" />
+
+            <TextView
+                    android:id="@+id/tvOpcao"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:textColor="#B0B0B0"
+                    android:layout_marginTop="8dp"
+                    android:text="Opção Escolhida" />
+        </LinearLayout>
+
+        <TextView
+                android:id="@+id/tvFotos"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF"
+                android:text="Fotos:"
+                android:layout_marginBottom="8dp"
+        android:layout_marginTop="20dp"/>
+
+        <HorizontalScrollView
+                android:id="@+id/scroll"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            <LinearLayout
+                    android:id="@+id/layoutImages"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="4dp" />
+        </HorizontalScrollView>
+
+        <Button
+                android:id="@+id/btnEncerrarLocacao"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Encerrar Locação"
+                android:textColor="#FFFFFF"
+                android:backgroundTint="#FFA100"
+                android:layout_marginTop="16dp"/>
+    </LinearLayout>
+</ScrollView>

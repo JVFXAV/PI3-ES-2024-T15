@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="16dp"
+                android:background="#0B0B0B">
+
+    <TextView
+            android:id="@+id/nome_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp"
+            android:text="Nome do Usuário"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:textColor="@color/white"/>
+
+    <ImageButton
+            android:id="@+id/logout_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="5dp"
+            android:src="@drawable/baseline_logout_24"
+            android:contentDescription="Logout"
+            android:backgroundTint="@android:color/transparent"/>
+
+    <ImageButton
+            android:id="@+id/visualizar_perfil_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toStartOf="@id/logout_button"
+            android:layout_alignTop="@id/logout_button"
+            android:layout_marginEnd="5dp"
+            android:src="@drawable/baseline_person_24"
+            android:contentDescription="Visualizar Perfil"
+            android:backgroundTint="@android:color/transparent"/>
+
+    <!-- Opção de visualizar unidade -->
+    <RelativeLayout
+            android:id="@+id/visualizarUnidadeContainer"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginTop="100dp"
+            android:layout_centerHorizontal="true"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="16dp">
+
+        <ImageView
+                android:id="@+id/mapImageView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/googlemapslogo"
+                android:scaleType="centerCrop"
+                android:alpha="0.6"/>
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Visualizar unidades"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_centerInParent="false"/>
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Aqui você pode acessar o mapa e visualizar as unidades de locação de armários existentes."
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_alignParentBottom="true"/>
+
+    </RelativeLayout>
+
+    <!-- Opção de visualizar locacao -->
+    <RelativeLayout
+            android:id="@+id/visualizarLocacaoContainer"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_centerHorizontal="true"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="16dp"
+            android:layout_below="@+id/visualizarUnidadeContainer">
+
+        <ImageView
+                android:id="@+id/locacaoImageView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/locacao_armario"
+                android:scaleType="centerCrop"
+                android:alpha="0.6"/>
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Realizar locação"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_centerInParent="false"/>
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Aqui você pode realizar uma locação de armário, escolhendo uma unidade próxima."
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_alignParentBottom="true"/>
+
+    </RelativeLayout>
+
+    <Button
+            android:id="@+id/historico_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Visualizar minhas Locações"
+            android:textColor="#FFFFFF"
+            android:textSize="12sp"
+            android:backgroundTint="@android:color/transparent"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginBottom="16dp"/>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/adicionar_cartao_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="16dp"
+            android:layout_marginEnd="16dp"
+            android:src="@drawable/baseline_credit_card_24"
+            android:contentDescription="Adicionar Cartão"
+            android:backgroundTint="@color/white"/>
+
+</RelativeLayout>

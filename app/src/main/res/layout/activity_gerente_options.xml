@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#121212"
+            android:padding="16dp">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+        <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:background="#121212">
+
+            <TextView
+                    android:id="@+id/nome_text_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:text="Nome do Usuário"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginTop="16dp"
+                    android:textColor="@android:color/white" />
+
+            <ImageButton
+                    android:id="@+id/logout_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginTop="10dp"
+                    android:src="@drawable/baseline_logout_24"
+                    android:contentDescription="Logout"
+                    android:backgroundTint="@android:color/transparent" />
+        </RelativeLayout>
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="16dp"
+                android:background="@drawable/rounded_corner"
+                android:layout_marginTop="24dp">
+
+            <ImageView
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:src="@drawable/ic_manager"
+                    android:contentDescription="Manager Image"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="16dp" />
+
+            <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center_vertical">
+
+                <TextView
+                        android:id="@+id/manager_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Gerente:"
+                        android:textSize="16sp"
+                        android:textColor="#FFFFFF" />
+
+                <TextView
+                        android:id="@+id/manager_contact"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:textSize="14sp"
+                        android:textColor="#B0B0B0" />
+
+                <TextView
+                        android:id="@+id/tvinfosGerente"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:textSize="14sp"
+                        android:textColor="#B0B0B0"
+                        android:layout_marginTop="10dp"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Horário de Funcionamento"
+                android:textSize="19sp"
+                android:textColor="#FFFFFF"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="40dp" />
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="07h - 18h"
+                android:textSize="14sp"
+                android:textColor="#B0B0B0"
+                android:layout_marginBottom="24dp"/>
+
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Opções de Locação"
+                android:textSize="19sp"
+                android:textColor="#FFFFFF"
+                android:layout_marginBottom="5dp"/>
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="30min\n1 hora\n2 horas\nDia todo (07h - 18h)"
+                android:textSize="14sp"
+                android:textColor="#B0B0B0"
+                android:layout_marginBottom="24dp"/>
+
+        <TextView
+                android:id="@+id/tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Suas opções"
+                android:textSize="19sp"
+                android:textColor="#FFFFFF"
+                android:layout_marginBottom="24dp"
+                android:layout_marginTop="30dp" />
+
+        <Button
+                android:id="@+id/btnLiberarLocacao"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Liberar Locação"
+                android:textColor="#FFFFFF"
+                android:backgroundTint="#FFA100"
+                android:layout_marginBottom="16dp" />
+
+        <Button
+                android:id="@+id/btnLerNFC"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Ler NFC"
+                android:textColor="#FFFFFF"
+                android:backgroundTint="#FFA100"
+                android:layout_marginBottom="16dp" />
+    </LinearLayout>
+</ScrollView>

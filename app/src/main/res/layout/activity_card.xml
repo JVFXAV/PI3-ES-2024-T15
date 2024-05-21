@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#0B0B0B"
+                android:padding="16dp">
+
+    <TextView
+            android:id="@+id/title_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cadastro de Cartão"
+            android:textColor="#FFFFFF"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="16dp"/>
+
+    <ImageButton
+            android:id="@+id/back_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:src="@drawable/baseline_arrow_back_24"
+            android:background="@null"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="16dp"/>
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp"
+            android:layout_below="@id/title_text_view"
+            android:layout_marginTop="80dp"
+            android:background="@color/white">
+
+        <EditText
+                android:id="@+id/numCartao_edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Número do Cartão"
+                android:inputType="number"
+                android:background="@android:color/transparent"
+                android:textColor="@color/black"
+                android:drawableStart="@drawable/baseline_credit_card_24"
+                android:drawablePadding="10dp"
+                android:layout_marginBottom="16dp"/>
+
+        <EditText
+                android:id="@+id/nomeCartao_edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Nome do Titular"
+                android:background="@android:color/transparent"
+                android:textColor="@color/black"
+                android:drawableStart="@drawable/baseline_person_24_black"
+                android:drawablePadding="10dp"
+                android:layout_marginBottom="16dp"/>
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+            <EditText
+                    android:id="@+id/validade_edit_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="MM/AA"
+                    android:inputType="number"
+                    android:background="@android:color/transparent"
+                    android:textColor="@color/black"
+                    android:drawableStart="@drawable/baseline_calendar_month_24"
+                    android:drawablePadding="10dp"
+                    android:layout_marginEnd="8dp"/>
+
+            <EditText
+                    android:id="@+id/cvv_edit_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="CVV"
+                    android:inputType="number"
+                    android:background="@android:color/transparent"
+                    android:textColor="@color/black"
+                    android:drawableStart="@drawable/baseline_lock_24"
+                    android:drawablePadding="10dp"/>
+        </LinearLayout>
+
+        <Button
+                android:id="@+id/cadastrarCartao_edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="CADASTRAR"
+                android:textColor="@color/black"
+                android:layout_marginTop="30dp"/>
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ao cadastrar o cartão o mesmo será usado para a cobrança da caução do armário alugado."
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="16dp"/>
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Este cartão poderá ser trocado posteriormente."
+                android:textColor="#9E9E9E"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="16dp"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="16dp"
+            android:background="#121212">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:background="@drawable/rounded_corner">
+
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Detalhes da Locação"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"
+                android:gravity="left"
+                android:layout_marginBottom="16dp"/>
+
+        <TextView
+                android:id="@+id/tvNomeUsuario"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"
+                android:text="Nome do Usuário"
+                android:layout_marginBottom="8dp"/>
+
+        <TextView
+                android:id="@+id/tvCelularUsuario"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textColor="@android:color/white"
+                android:text="Celular do Usuário"
+                android:layout_marginBottom="8dp"/>
+
+        <TextView
+                android:id="@+id/tvOpcao"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textColor="@android:color/white"
+                android:text="Opção Escolhida"
+                android:layout_marginBottom="16dp"/>
+
+        <HorizontalScrollView
+                android:id="@+id/scroll"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp">
+
+            <LinearLayout
+                    android:id="@+id/layoutImages"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="4dp"/>
+        </HorizontalScrollView>
+
+        <Button
+                android:id="@+id/btnSalvarLocacao"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Gravar Locação NFC"
+                android:backgroundTint="#FFA100"
+                android:textColor="@android:color/white"
+                android:layout_marginTop="16dp"/>
+    </LinearLayout>
+</ScrollView>

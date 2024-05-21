@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:padding="16dp"
+              android:background="#0B0B0B">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+        <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Minhas locações"
+                android:textSize="21sp"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF"
+                android:layout_gravity="left"
+                android:layout_marginBottom="16dp"/>
+
+        <ImageButton
+                android:id="@+id/back_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/baseline_arrow_back_24"
+                android:backgroundTint="@android:color/transparent"
+                android:layout_marginBottom="16dp"/>
+
+    </LinearLayout>
+
+    <RadioGroup
+            android:id="@+id/radioGroupFiltro"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="left"
+            android:layout_marginBottom="16dp">
+
+        <RadioButton
+                android:id="@+id/radio_encerradas"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Encerradas"
+                android:textColor="@android:color/white"
+                android:backgroundTint="#FFA100"/>
+
+        <RadioButton
+                android:id="@+id/radio_andamento"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Em Andamento"
+                android:textColor="@android:color/white"
+                android:backgroundTint="#FFA100"/>
+    </RadioGroup>
+
+    <TextView
+            android:id="@+id/textViewNenhumaLocacao"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Nenhuma locação encontrada"
+            android:textSize="16sp"
+            android:textColor="@android:color/white"
+            android:gravity="center"
+            android:visibility="gone"/>
+
+    <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+        <LinearLayout
+                android:id="@+id/linearLayoutHistorico"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>
