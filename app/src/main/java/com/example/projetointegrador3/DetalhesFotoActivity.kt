@@ -24,7 +24,7 @@ import kotlin.collections.ArrayList
 
 class DetalhesFotoActivity : AppCompatActivity() {
 
-    // Declaração de variáveis para os componentes da UI e variáveis de controle
+    // Declaração de variáveis para os componentes da UI e controle
     private lateinit var tvNomeUsuario: TextView
     private lateinit var tvCelularUsuario: TextView
     private lateinit var tvOpcao: TextView
@@ -48,17 +48,21 @@ class DetalhesFotoActivity : AppCompatActivity() {
         tvOpcao = findViewById(R.id.tvOpcao)
         layoutImages = findViewById(R.id.layoutImages)
 
+        // Obtém os dados passados pela Intent
         unidadeId = intent.getStringExtra("unidadeId")
         val uid = intent.getStringExtra("uid") ?: ""
         val opcao = intent.getStringExtra("opcao") ?: ""
         val fotosUri = intent.getParcelableArrayListExtra<Uri>("fotosUri") ?: arrayListOf()
 
+        // Exibe a opção escolhida
         tvOpcao.text = "Opção Escolhida: $opcao"
 
+        // Busca dados do usuário e da unidade
         buscarDadosUsuario(uid)
         buscarDadosUnidadePorCampoId(unidadeId!!)
         mostrarFotos(fotosUri)
 
+        // Configura o botão para salvar a locação
         btnSalvarLocacao = findViewById(R.id.btnSalvarLocacao)
         btnSalvarLocacao.setOnClickListener {
             btnSalvarLocacao.text = "Carregando..."
@@ -68,6 +72,7 @@ class DetalhesFotoActivity : AppCompatActivity() {
             }
         }
 
+        // Inicializa o adaptador NFC
         nfcAdapter = NfcAdapter.getDefaultAdapter(this)
     }
 
@@ -202,24 +207,36 @@ class DetalhesFotoActivity : AppCompatActivity() {
         val dataInicio = Date()
         val dataFim = calcularDataHoraFim(dataInicio, opcao)
 
-        val locacaoMap = hashMapOf(
-            "unidadeId" to unidadeId,
-            "uid" to uid,
-            "opcao" to opcao,
-            "dataHoraInicio" to dataInicio,
-            "dataHoraFimPrevisto" to dataFim,
-            "fotosUrls" to urlsFotos,
-            "numeroArmario" to numeroArmarioDisponivel,
-            "status" to "Em andamento"
-        )
+        // Buscar o valor da diária
+        db.collection("unidades").whereEqualTo("id", unidadeId).get()
+            .addOnSuccessListener { documents ->
+                if (!documents.isEmpty) {
+                    val document = documents.documents.first()
+                    val valorDiaria = document.get("opcoesLocacao.dia") as? Number ?: 0
 
-        db.collection("locacoes").add(locacaoMap)
-            .addOnSuccessListener { documentReference ->
-                numeroArmarioDisponivel?.let {
-                    atualizarStatusArmario(unidadeId, it, "ocupado")
+                    // Cria um mapa de dados para a locação
+                    val locacaoMap = hashMapOf(
+                        "unidadeId" to unidadeId,
+                        "uid" to uid,
+                        "opcao" to opcao,
+                        "dataHoraInicio" to dataInicio,
+                        "dataHoraFimPrevisto" to dataFim,
+                        "fotosUrls" to urlsFotos,
+                        "numeroArmario" to numeroArmarioDisponivel,
+                        "status" to "Em andamento",
+                        "valorTotalSemEstorno" to valorDiaria.toDouble()
+                    )
+
+                    // Salva os dados da locação no Firestore
+                    db.collection("locacoes").add(locacaoMap)
+                        .addOnSuccessListener { documentReference ->
+                            numeroArmarioDisponivel?.let {
+                                atualizarStatusArmario(unidadeId, it, "ocupado")
+                            }
+                            locacaoId = documentReference.id
+                            mostrarDialogoNFC()
+                        }
                 }
-                locacaoId = documentReference.id
-                mostrarDialogoNFC()
             }
     }
 
@@ -292,6 +309,7 @@ class DetalhesFotoActivity : AppCompatActivity() {
                 checkDialog.setCancelable(false)
                 checkDialog.show()
 
+                // Redireciona para a tela de opções do gerente após 5 segundos
                 Handler(Looper.getMainLooper()).postDelayed({
                     val intent = Intent(this, GerenteOptionsActivity::class.java)
                     intent.putExtra("unidadeId", unidadeId)

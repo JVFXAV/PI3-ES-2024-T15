@@ -18,7 +18,7 @@
                 android:text="Unidade"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:textColor="#000000"/>
+                android:textColor="#000000" />
 
         <TextView
                 android:id="@+id/text_view_data_inicio"
@@ -27,7 +27,7 @@
                 android:text="Data Início"
                 android:textSize="14sp"
                 android:textColor="#000000"
-                android:layout_marginTop="4dp"/>
+                android:layout_marginTop="4dp" />
 
         <TextView
                 android:id="@+id/text_view_data_fim"
@@ -36,7 +36,7 @@
                 android:text="Data Fim"
                 android:textSize="14sp"
                 android:textColor="#000000"
-                android:layout_marginTop="4dp"/>
+                android:layout_marginTop="4dp" />
 
         <TextView
                 android:id="@+id/text_view_numero_armario"
@@ -45,7 +45,7 @@
                 android:text="Número do Armário"
                 android:textSize="14sp"
                 android:textColor="#000000"
-                android:layout_marginTop="4dp"/>
+                android:layout_marginTop="4dp" />
 
         <TextView
                 android:id="@+id/text_view_status"
@@ -54,7 +54,7 @@
                 android:text="Status"
                 android:textSize="14sp"
                 android:textColor="#000000"
-                android:layout_marginTop="4dp"/>
+                android:layout_marginTop="4dp" />
 
         <TextView
                 android:id="@+id/text_view_total_pago"
@@ -63,8 +63,33 @@
                 android:text="Total Pago"
                 android:textSize="14sp"
                 android:textColor="#000000"
-                android:layout_marginTop="4dp"/>
+                android:layout_marginTop="4dp" />
 
+        <TextView
+                android:id="@+id/text_view_valor_estorno"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Valor Estorno:"
+                android:textSize="14sp"
+                android:textColor="#000000"
+                android:layout_marginTop="4dp" />
+
+        <TextView
+                android:id="@+id/text_view_detalhes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Detalhes"
+                android:textSize="14sp"
+                android:textColor="#000000"
+                android:layout_marginTop="4dp" />
+
+        <TextView
+                android:id="@+id/text_view_mensagem_andamento"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Mensagem Andamento"
+                android:textSize="14sp"
+                android:textColor="#000000"
+                android:layout_marginTop="4dp" />
     </LinearLayout>
-
 </androidx.cardview.widget.CardView>

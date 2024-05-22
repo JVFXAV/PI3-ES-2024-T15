@@ -23,7 +23,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 
 class GerenteOptionsActivity : AppCompatActivity() {
 
-    // Declaração de variáveis para os componentes da UI e variáveis de controle
+    // Declaração de variáveis para os componentes da UI e controle
     private lateinit var btnLiberarLocacao: Button
     private lateinit var btnLerNFC: Button
     private lateinit var logout: ImageButton
@@ -57,6 +57,7 @@ class GerenteOptionsActivity : AppCompatActivity() {
         // Obtém o ID da unidade passado pela Intent
         val unidadeId = intent.getStringExtra("unidadeId")
 
+        // Carrega informações do gerente se a unidadeId estiver presente
         if (unidadeId != null) {
             carregarInformacoesGerente(unidadeId)
         }
@@ -64,6 +65,7 @@ class GerenteOptionsActivity : AppCompatActivity() {
         // Configura o botão para liberar locação
         btnLiberarLocacao.setOnClickListener {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                // Solicita permissão para usar a câmera, se não estiver concedida
                 ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), CAMERA_REQUEST_CODE)
             } else {
                 if (unidadeId != null) {
@@ -86,27 +88,32 @@ class GerenteOptionsActivity : AppCompatActivity() {
             finish()
         }
 
+        // Inicializa o adaptador NFC
         nfcAdapter = NfcAdapter.getDefaultAdapter(this)
     }
 
     // Método onResume é chamado quando a atividade é retomada
     override fun onResume() {
         super.onResume()
+        // Configura o PendingIntent para captura de tags NFC
         val pendingIntent: PendingIntent = PendingIntent.getActivity(
             this, 0, Intent(this, javaClass).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP),
             PendingIntent.FLAG_UPDATE_CURRENT
         )
+        // Configura os filtros de intent para diferentes ações NFC
         val nfcIntentFilter = arrayOf(
             IntentFilter(NfcAdapter.ACTION_TAG_DISCOVERED),
             IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED),
             IntentFilter(NfcAdapter.ACTION_TECH_DISCOVERED)
         )
+        // Ativa o dispatch em foreground para captura de tags NFC
         nfcAdapter?.enableForegroundDispatch(this, pendingIntent, nfcIntentFilter, null)
     }
 
     // Método onPause é chamado quando a atividade é pausada
     override fun onPause() {
         super.onPause()
+        // Desativa o dispatch em foreground para NFC
         nfcAdapter?.disableForegroundDispatch(this)
     }
 
@@ -115,6 +122,7 @@ class GerenteOptionsActivity : AppCompatActivity() {
         super.onNewIntent(intent)
         setIntent(intent)
 
+        // Obtém a tag NFC da intent
         val tag: Tag? = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG)
         if (tag != null) {
             val ndef = Ndef.get(tag)
@@ -139,14 +147,14 @@ class GerenteOptionsActivity : AppCompatActivity() {
             }
             val ndefRecord = ndefMessage.records[0]
             val message = String(ndefRecord.payload, Charsets.UTF_8)
-            val locacaoId = message.substring(3)
+            val locacaoId = message.substring(3) // Remove o prefixo de idioma
             ndef.close()
 
             loadingDialog?.dismiss()
             verificarLocacaoNoBanco(locacaoId)
         } catch (e: Exception) {
             loadingDialog?.dismiss()
-            Toast.makeText(this, "NFC disponível para uso", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Não encontramos nenhum dado na TAG.", Toast.LENGTH_SHORT).show()
         }
     }
 

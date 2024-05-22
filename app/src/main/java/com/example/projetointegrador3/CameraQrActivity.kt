@@ -22,7 +22,7 @@ import com.google.mlkit.vision.barcode.BarcodeScannerOptions
 
 class CameraQrActivity : AppCompatActivity() {
 
-    // Declaração de variáveis para os componentes da UI e variáveis de controle
+    // Declaração de variáveis para os componentes da UI e controle
     private lateinit var cameraPreviewView: PreviewView
     private lateinit var cardView: CardView
     private lateinit var tvQrCodeData: TextView
@@ -105,8 +105,31 @@ class CameraQrActivity : AppCompatActivity() {
             .filter { it.key in camposDesejados }
             .joinToString("\n") { "${it.key}: ${it.value}" }
 
-        tvQrCodeData.text = displayText
-        cardView.visibility = View.VISIBLE
+        // Verifica se o gerente escaneado é o gerente da unidade
+        val unidadeId = intent.getStringExtra("unidadeId") ?: ""
+        val gerenteEscaneado = dataMap["Gerente"] ?: ""
+
+        FirebaseFirestore.getInstance().collection("unidades")
+            .whereEqualTo("id", unidadeId)
+            .get()
+            .addOnSuccessListener { documents ->
+                if (!documents.isEmpty) {
+                    val document = documents.documents[0]
+                    val gerenteUnidade = document.getString("gerente")
+                    if (gerenteUnidade == gerenteEscaneado) {
+                        tvQrCodeData.text = displayText
+                        cardView.visibility = View.VISIBLE
+                    } else {
+                        Toast.makeText(this, "Gerente não autorizado para esta unidade", Toast.LENGTH_SHORT).show()
+                        cardView.visibility = View.GONE
+                    }
+                } else {
+                    Toast.makeText(this, "Unidade não encontrada", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(this, "Erro ao verificar gerente: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
     }
 
     // Verifica a disponibilidade de armários na unidade
@@ -186,7 +209,7 @@ class CameraQrActivity : AppCompatActivity() {
                         }
                     }
                     .addOnFailureListener {
-                        // Toast.makeText(this, "Falha ao processar QR CODE", Toast.LENGTH_SHORT).show()
+                        // Tratamento de falha no processamento do QR Code
                     }
                     .addOnCompleteListener {
                         imageProxy.close()

@@ -32,6 +32,8 @@ class LeituraNFCActivity : AppCompatActivity() {
     private lateinit var tvOpcao: TextView
     private lateinit var layoutImages: LinearLayout
     private lateinit var btnEncerrarLocacao: Button
+    private lateinit var btnAbrirArmario: Button
+    private lateinit var backButton: ImageButton
 
     private var nfcAdapter: NfcAdapter? = null
     private var loadingDialog: AlertDialog? = null
@@ -54,6 +56,8 @@ class LeituraNFCActivity : AppCompatActivity() {
         tvOpcao = findViewById(R.id.tvOpcao)
         layoutImages = findViewById(R.id.layoutImages)
         btnEncerrarLocacao = findViewById(R.id.btnEncerrarLocacao)
+        btnAbrirArmario = findViewById(R.id.btnAbrirArmario)
+        backButton = findViewById(R.id.back_button)
 
         // Obtém o ID da locação passado pela Intent
         locacaoId = intent.getStringExtra("locacaoId")
@@ -68,8 +72,16 @@ class LeituraNFCActivity : AppCompatActivity() {
             showConfirmationDialog()
         }
 
+        // Configura o botão para abrir o armário
+        btnAbrirArmario.setOnClickListener {
+            showOpenLockerDialog()
+        }
+
         // Obtém o adaptador NFC do dispositivo
         nfcAdapter = NfcAdapter.getDefaultAdapter(this)
+
+        // Configura o botão de voltar
+        backButton.setOnClickListener { finish() }
     }
 
     // Método onResume é chamado quando a atividade é retomada
@@ -126,6 +138,20 @@ class LeituraNFCActivity : AppCompatActivity() {
         builder.show()
     }
 
+    // Exibe um diálogo para confirmar a abertura do armário
+    private fun showOpenLockerDialog() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Armário Aberto")
+        builder.setMessage("O armário foi aberto corretamente?")
+        builder.setPositiveButton("Não, tentar novamente") { _, _ ->
+            showOpenLockerDialog()
+        }
+        builder.setNegativeButton("Sim") { dialog, _ ->
+            dialog.dismiss()
+        }
+        builder.show()
+    }
+
     // Exibe um diálogo de carregamento enquanto espera a aproximação da tag NFC
     private fun showLoadingDialog() {
         val builder = AlertDialog.Builder(this)
@@ -163,27 +189,36 @@ class LeituraNFCActivity : AppCompatActivity() {
         locacaoId?.let {
             db.collection("locacoes").document(it).get().addOnSuccessListener { document ->
                 if (document.exists()) {
+                    // Obtém dados da locação do Firestore
                     dataHoraInicio = document.getDate("dataHoraInicio")
                     dataHoraFimPrevisto = document.getDate("dataHoraFimPrevisto")
                     val opcao = document.getString("opcao")
                     val numeroArmario = document.getString("numeroArmario")
                     val unidadeId = document.getString("unidadeId")
+                    val valorTotalSemEstorno = document.getDouble("valorTotalSemEstorno") ?: 0.0
 
                     if (dataHoraInicio != null && opcao != null && numeroArmario != null && unidadeId != null) {
-                        calcularTotalAPagar(unidadeId, dataHoraInicio!!, dataHoraFim!!, opcao) { total ->
-                            totalAPagar = total
+                        // Calcula o valor total a pagar
+                        calcularTotalAPagar(unidadeId, dataHoraInicio!!, dataHoraFim!!, opcao) { totalLocacao ->
+                            totalAPagar = totalLocacao
 
+                            val valorEstorno = valorTotalSemEstorno - totalLocacao
                             val updates = hashMapOf(
                                 "dataHoraFim" to dataHoraFim,
-                                "totalAPagar" to totalAPagar,
-                                "status" to "encerrado"
+                                "totalAPagar" to totalLocacao,
+                                "status" to "encerrado",
+                                "valorEstorno" to valorEstorno,
+                                "valorTotalComEstorno" to (valorTotalSemEstorno - valorEstorno)
                             )
 
+                            // Atualiza os dados da locação no Firestore
                             db.collection("locacoes").document(it).update(updates as Map<String, Any>)
                                 .addOnSuccessListener {
                                     Toast.makeText(this, "Locação encerrada com sucesso", Toast.LENGTH_SHORT).show()
+                                    // Atualiza o status do armário
                                     atualizarStatusArmario(unidadeId, numeroArmario)
-                                    mostrarResumoLocacao(dataHoraInicio!!, dataHoraFimPrevisto!!, dataHoraFim!!, totalAPagar!!)
+                                    // Mostra um resumo da locação
+                                    mostrarResumoLocacao(dataHoraInicio!!, dataHoraFimPrevisto!!, dataHoraFim!!, totalLocacao, valorEstorno)
                                 }
                                 .addOnFailureListener { e ->
                                     Toast.makeText(this, "Erro ao encerrar locação: ${e.message}", Toast.LENGTH_SHORT).show()
@@ -233,14 +268,16 @@ class LeituraNFCActivity : AppCompatActivity() {
                     val diff = dataHoraFim.time - dataHoraInicio.time
                     val diffMinutes = diff / (1000 * 60)
 
-                    val totalAPagar = when {
+                    // Calcula o valor baseado na duração da locação
+                    val valorDiaria = (opcoesLocacao["dia"]?.toDouble()) ?: 0.0
+                    val valorLocacao = when {
                         diffMinutes <= 30 -> (opcoesLocacao["30min"]?.toDouble()) ?: 0.0
                         diffMinutes <= 60 -> (opcoesLocacao["1h"]?.toDouble()) ?: 0.0
                         diffMinutes <= 120 -> (opcoesLocacao["2h"]?.toDouble()) ?: 0.0
-                        else -> (opcoesLocacao["dia"]?.toDouble()) ?: 0.0
+                        else -> valorDiaria
                     }
 
-                    callback(totalAPagar)
+                    callback(valorLocacao)
                 } else {
                     Toast.makeText(this, "Erro ao buscar preços da unidade", Toast.LENGTH_SHORT).show()
                 }
@@ -251,17 +288,24 @@ class LeituraNFCActivity : AppCompatActivity() {
     }
 
     // Exibe um resumo da locação encerrada
-    private fun mostrarResumoLocacao(dataHoraInicio: Date, dataHoraFimPrevisto: Date, dataHoraFim: Date, totalAPagar: Double) {
-        val builder = AlertDialog.Builder(this)
+    private fun mostrarResumoLocacao(dataHoraInicio: Date, dataHoraFimPrevisto: Date, dataHoraFim: Date, totalAPagar: Double, valorEstorno: Double) {
+        val dialogView = layoutInflater.inflate(R.layout.dialog_resumo_locacao, null)
+        val builder = AlertDialog.Builder(this).setView(dialogView)
         val sdf = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
 
-        builder.setTitle("Resumo da Locação")
-        builder.setMessage("""
-            Horário de Início: ${sdf.format(dataHoraInicio)}
-            Horário Previsto para Término: ${sdf.format(dataHoraFimPrevisto)}
-            Horário de Término: ${sdf.format(dataHoraFim)}
-            Total a Pagar: R$ $totalAPagar
-        """.trimIndent())
+        val tvResumoInicio: TextView = dialogView.findViewById(R.id.tvResumoInicio)
+        val tvResumoPrevisto: TextView = dialogView.findViewById(R.id.tvResumoPrevisto)
+        val tvResumoFim: TextView = dialogView.findViewById(R.id.tvResumoFim)
+        val tvResumoTotal: TextView = dialogView.findViewById(R.id.tvResumoTotal)
+        val tvResumoEstorno: TextView = dialogView.findViewById(R.id.tvResumoEstorno)
+
+        // Preenche os campos do resumo com os dados da locação
+        tvResumoInicio.text = "Horário de Início: ${sdf.format(dataHoraInicio)}"
+        tvResumoPrevisto.text = "Horário Previsto para Término: ${sdf.format(dataHoraFimPrevisto)}"
+        tvResumoFim.text = "Horário de Término: ${sdf.format(dataHoraFim)}"
+        tvResumoTotal.text = "Total a Pagar: R$ $totalAPagar"
+        tvResumoEstorno.text = "Valor Estorno: R$ $valorEstorno"
+
         builder.setPositiveButton("Retornar") { _, _ ->
             finish()
         }
@@ -323,6 +367,7 @@ class LeituraNFCActivity : AppCompatActivity() {
                 setOnClickListener {
                     showImageDialog(url)
                 }
+                // Carrega a imagem com o Picasso
                 Picasso.get().load(url).into(this, object : Callback {
                     override fun onSuccess() {
                         // Corrige a orientação da imagem

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical"
+              android:padding="16dp"
+              android:background="@color/white"
+              android:paddingStart="24dp"
+              android:paddingEnd="24dp">
+
+    <TextView
+            android:id="@+id/tvResumoTitulo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Resumo da Locação"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:gravity="center"
+            android:paddingBottom="16dp" />
+
+    <TextView
+            android:id="@+id/tvResumoInicio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Horário de Início:"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp" />
+
+    <TextView
+            android:id="@+id/tvResumoPrevisto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Horário Previsto para Término:"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp" />
+
+    <TextView
+            android:id="@+id/tvResumoFim"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Horário de Término:"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp" />
+
+    <TextView
+            android:id="@+id/tvResumoTotal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Total a Pagar:"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp" />
+
+    <TextView
+            android:id="@+id/tvResumoEstorno"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Valor Estorno:"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp" />
+
+</LinearLayout>

@@ -19,7 +19,7 @@ import java.util.*
 
 class HomeActivity : AppCompatActivity() {
 
-    // Declaração de componentes
+    // Declaração de componentes da interface
     private lateinit var nomeTextView: TextView
     private lateinit var logoutButton: ImageButton
     private lateinit var profileButton: ImageButton
@@ -32,6 +32,7 @@ class HomeActivity : AppCompatActivity() {
 
     private lateinit var firebaseAuth: FirebaseAuth
 
+    // Método onCreate é executado quando a atividade é criada
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_homepage)
@@ -39,7 +40,7 @@ class HomeActivity : AppCompatActivity() {
         // Inicialização do Firebase Auth
         firebaseAuth = FirebaseAuth.getInstance()
 
-        // Verificar se o usuario saiu do app antes de ter completado locacao com o gerente
+        // Verifica se o usuário saiu do app antes de completar a locação
         verificarLocacaoPendente()
 
         // Inicialização dos componentes de interface do usuário
@@ -48,18 +49,21 @@ class HomeActivity : AppCompatActivity() {
         profileButton = findViewById(R.id.visualizar_perfil_button)
         cadastrarCartaoButton = findViewById(R.id.adicionar_cartao_fab)
         historicoButton = findViewById(R.id.historico_button)
-
         visualizarLocacaoContainer = findViewById(R.id.visualizarLocacaoContainer)
+        visualizarMapaContainer = findViewById(R.id.visualizarUnidadeContainer)
+
+        // Configura o botão de visualização de locação para verificar se há um cartão cadastrado
         visualizarLocacaoContainer.setOnClickListener {
             verificarCartaoCadastrado()
         }
 
-        visualizarMapaContainer = findViewById(R.id.visualizarUnidadeContainer)
+        // Configura o botão de visualização do mapa para abrir a atividade do mapa
         visualizarMapaContainer.setOnClickListener {
             val intent = Intent(this, MapActivity::class.java)
             startActivity(intent)
         }
 
+        // Inicializa o provedor de localização
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
 
         // Obtendo o usuário atualmente autenticado
@@ -86,27 +90,31 @@ class HomeActivity : AppCompatActivity() {
             Toast.makeText(applicationContext, "Nenhum usuário logado", Toast.LENGTH_SHORT).show()
         }
 
+        // Configura o botão de logout
         logoutButton.setOnClickListener {
             realizarLogout()
         }
 
-        profileButton.setOnClickListener{
+        // Configura o botão de perfil para abrir a atividade de perfil
+        profileButton.setOnClickListener {
             val intent = Intent(this, ProfileActivity::class.java)
             startActivity(intent)
         }
 
+        // Configura o botão de cadastro de cartão para abrir a atividade de visualização de cartão
         cadastrarCartaoButton.setOnClickListener {
             val intent = Intent(this, ViewCardActivity::class.java)
             startActivity(intent)
         }
 
+        // Configura o botão de histórico para abrir a atividade de histórico
         historicoButton.setOnClickListener {
             val intent = Intent(this, HistoricoActivity::class.java)
             startActivity(intent)
         }
     }
 
-    // Verifica se há locações pendentes e caso tenha retorna os dados que ficaram salvos e leva para a activity do qr code caso o usuario não cancele
+    // Verifica se há locações pendentes e leva para a atividade do QR code se o usuário não cancelar
     private fun verificarLocacaoPendente() {
         val currentUser = firebaseAuth.currentUser
         val uid = currentUser!!.uid
@@ -234,7 +242,7 @@ class HomeActivity : AppCompatActivity() {
                 val unidadeEscolhida = unidadesEProximidade[which]
                 exibirOpcoesLocacao(unidadeEscolhida)
             }
-            .setNegativeButton("Cancelar") { dialog, which ->
+            .setNegativeButton("Cancelar") { dialog, _ ->
                 dialog.dismiss()
             }
             .show()
@@ -246,31 +254,42 @@ class HomeActivity : AppCompatActivity() {
         val horaAtual = calendar.get(Calendar.HOUR_OF_DAY)
         val minutosAtual = calendar.get(Calendar.MINUTE)
 
-        Toast.makeText(this, "$horaAtual-$minutosAtual", Toast.LENGTH_LONG).show()
-
-        val opcoesFiltradas = unidade.opcoesLocacao.filter { (chave, _) ->
-            when (chave) {
+        val opcoesLocacaoArray = unidade.opcoesLocacao.keys.map { chave ->
+            val isDisponivel = when (chave) {
                 "dia" -> horaAtual in 7..8 // Opção "dia" disponível entre 07:00 e 08:00
                 "2h" -> (horaAtual < 16 || (horaAtual == 16 && minutosAtual == 0)) // Opção "2h" disponível até 16:00 (para completar até as 18:00)
                 "1h" -> (horaAtual < 17 || (horaAtual == 17 && minutosAtual == 0)) // Opção "1h" disponível até 17:00
-                "30min" -> horaAtual <= 17 || (horaAtual == 17 && minutosAtual <= 30) // Opção "30min" disponível até 17:30
+                "30min" -> (horaAtual <= 17 && minutosAtual <= 30) // Opção "30min" disponível até 17:30
                 else -> true
             }
+            chave to isDisponivel
         }
 
-        if (opcoesFiltradas.isEmpty()) {
-            Toast.makeText(this, "Nenhuma opção de locação disponível no momento. Horário de Funcionamento (07h - 18h)", Toast.LENGTH_LONG).show()
-            return
+        val opcoesDisponiveis = opcoesLocacaoArray.filter { it.second }.map { it.first }
+        val opcoesIndisponiveis = opcoesLocacaoArray.filter { !it.second }.map { it.first }
+
+        val builder = StringBuilder()
+        builder.append("Disponíveis no momento:\n")
+        opcoesDisponiveis.forEach { opcao ->
+            builder.append(opcao).append("\n")
+        }
+        builder.append("\nIndisponíveis no momento:\n")
+        opcoesIndisponiveis.forEach { opcao ->
+            builder.append(opcao).append("\n")
         }
 
-        val opcoesLocacaoArray = opcoesFiltradas.map { "${it.key} = R$ ${it.value},00" }.toTypedArray()
+        val dialogItems = builder.toString().split("\n").toTypedArray()
 
         AlertDialog.Builder(this)
-            .setTitle("Escolha o tempo de locação (Disponível no momento)")
-            .setItems(opcoesLocacaoArray) { _, which ->
-                val escolha = opcoesLocacaoArray[which].split(" = ")[0]
-                val preco = opcoesFiltradas[escolha]!!.toInt()
-                confirmarLocacao(escolha, preco, unidade.gerente, unidade)
+            .setTitle("Escolha o tempo de locação")
+            .setItems(dialogItems) { dialog, which ->
+                val escolha = dialogItems[which]
+                if (escolha in opcoesDisponiveis) {
+                    val preco = unidade.opcoesLocacao[escolha]!!.toInt()
+                    confirmarLocacao(escolha, preco, unidade.gerente, unidade)
+                } else if (escolha in opcoesIndisponiveis) {
+                    Toast.makeText(this, "Opção indisponível no momento", Toast.LENGTH_SHORT).show()
+                }
             }
             .setNegativeButton("Cancelar", null)
             .show()
@@ -301,7 +320,6 @@ class HomeActivity : AppCompatActivity() {
 
     // Leva para a activity com o QR Code para a locação confirmada
     private fun mostrarQrCode(opcao: String, preco: String, gerente: String, unidadeNome: String, uid: String) {
-
         val intent = Intent(this, QrCodeActivity::class.java)
         intent.putExtra("opcao", opcao)
         intent.putExtra("preco", preco)

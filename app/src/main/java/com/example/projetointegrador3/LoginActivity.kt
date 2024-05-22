@@ -1,16 +1,11 @@
 package com.example.projetointegrador3
 
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
-import android.text.InputType
 import android.util.Log
-import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
-import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
@@ -26,7 +21,6 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var gotoCadastroButton: Button
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var gotoMapButton: ImageButton
-    private lateinit var gerenteButton: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,7 +38,7 @@ class LoginActivity : AppCompatActivity() {
 
         loginButton.setOnClickListener {
             if (camposEstaoPreenchidos()) {
-                loginButton.text = "Carregando..." // Muda o texto do botão para carregando enquanto verifica no banco.
+                // loginButton.text = "Carregando..." // Muda o texto do botão para carregando enquanto verifica no banco.
                 loginCliente()
             } else {
                 Toast.makeText(this@LoginActivity, "Preencha todos os campos", Toast.LENGTH_SHORT).show()
@@ -85,7 +79,13 @@ class LoginActivity : AppCompatActivity() {
                         if (email.contains("smart")) {
                             verificaGerente(email)
                         } else {
-                            iniciarSessaoUsuarioComum(user)
+                            // Verificar se teve a confirmação de email
+                            if (user.isEmailVerified) {
+                                iniciarSessaoUsuarioComum(user)
+                            } else {
+                                Toast.makeText(applicationContext, "E-mail não verificado. Por favor, verifique seu e-mail.", Toast.LENGTH_SHORT).show()
+                                firebaseAuth.signOut() // Faz logout do usuário
+                            }
                         }
                     }
                 } else {

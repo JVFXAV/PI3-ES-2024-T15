@@ -105,9 +105,11 @@ class CameraFotosActivity : AppCompatActivity() {
 
     // Captura uma foto e salva em um arquivo
     private fun capturarFoto() {
+        // Cria um arquivo para salvar a foto
         val photoFile = File(getOutputDirectory(), "foto_${System.currentTimeMillis()}.jpg")
         val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
 
+        // Captura a foto
         imageCapture.takePicture(
             outputOptions,
             ContextCompat.getMainExecutor(this),
