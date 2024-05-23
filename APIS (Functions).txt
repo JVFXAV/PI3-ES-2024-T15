@@ -1,0 +1,122 @@
+import {initializeApp} from "firebase/app";
+// eslint-disable-next-line max-len
+import {getAuth, createUserWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail, signInWithEmailAndPassword} from "firebase/auth";
+import {getFirestore, doc, setDoc, getDoc, updateDoc} from "firebase/firestore";
+import * as functions from "firebase-functions";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCIfXaW0CrEbSJcJZE71fIUWUHbM4Djd2Y",
+  authDomain: "projeto-integrador-3-415419.firebaseapp.com",
+  projectId: "projeto-integrador-3-415419",
+  storageBucket: "projeto-integrador-3-415419.appspot.com",
+  messagingSenderId: "988638593068",
+  appId: "1:988638593068:web:b943dd743ce783aa055189",
+};
+
+initializeApp(firebaseConfig);
+const auth = getAuth();
+const firestore = getFirestore();
+
+// eslint-disable-next-line max-len
+export const funcCadastrarCliente = functions.region("southamerica-east1").https.onRequest(async (request, response) => {
+  const cliente = request.body;
+
+  try {
+    // eslint-disable-next-line max-len
+    const userCredential = await createUserWithEmailAndPassword(auth, cliente.email, cliente.senha);
+    const user = userCredential.user;
+
+    // eslint-disable-next-line max-len
+    await sendEmailVerification(user || undefined);
+
+    await setDoc(doc(firestore, "pessoas", user.uid), {
+      nome: cliente.nome,
+      email: cliente.email,
+      cpf: cliente.cpf,
+      celular: cliente.celular,
+      dataNascimento: cliente.dataNascimento,
+      uid: user.uid,
+    });
+
+    // eslint-disable-next-line max-len
+    response.send("Cadastro realizado com sucesso. Um e-mail de verificação foi enviado para: " + cliente.email);
+  } catch (error) {
+    console.error("Erro ao cadastrar cliente:", error);
+    // eslint-disable-next-line max-len
+    response.status(500).send("Erro ao cadastrar cliente. Por favor, tente novamente mais tarde.");
+  }
+});
+
+// Função para recuperar senha
+// eslint-disable-next-line max-len
+export const funcRecuperarSenha = functions.region("southamerica-east1").https.onRequest(async (request, response) => {
+  const {email} = request.body;
+
+  try {
+    await sendPasswordResetEmail(auth, email);
+    response.send("E-mail de recuperação de senha enviado para: " + email);
+  } catch (error) {
+    console.error("Erro ao enviar e-mail de recuperação de senha:", error);
+    // eslint-disable-next-line max-len
+    response.status(500).send("Erro ao enviar e-mail de recuperação de senha. Por favor, verifique o e-mail inserido e tente novamente.");
+  }
+});
+
+
+// Função para fazer login
+// eslint-disable-next-line max-len
+export const funcLogin = functions.region("southamerica-east1").https.onRequest(async (request, response) => {
+  const {email, senha} = request.body;
+
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, email, senha);
+    const user = userCredential.user;
+
+    // Envie um sinalizador de sucesso para o cliente
+    response.send({success: true, userEmail: user.email, userId: user.uid});
+  } catch (error) {
+    console.error("Erro ao fazer login:", error);
+    // eslint-disable-next-line max-len
+    response.status(500).send("Erro ao fazer login: Usuário não encontrado");
+  }
+});
+
+export const funcCadastrarCartao = functions
+  .region("southamerica-east1")
+  .https.onRequest(async (request, response) => {
+    // eslint-disable-next-line max-len
+    const {userId, numeroCartao, nomeTitular, dataExpiracao, cvv} = request.body;
+
+    try {
+      if (!userId || !numeroCartao || !nomeTitular || !dataExpiracao || !cvv) {
+        throw new Error("Todos os campos do cartão são obrigatórios.");
+      }
+
+      const usuarioDocRef = doc(firestore, "pessoas", userId);
+      const usuarioDocSnap = await getDoc(usuarioDocRef);
+
+      if (!usuarioDocSnap.exists()) {
+        throw new Error("Usuário não encontrado.");
+      }
+
+      const userData = usuarioDocSnap.data();
+
+      if (!userData.cartaoCredito) {
+        userData.cartaoCredito = {};
+      }
+
+      userData.cartaoCredito.numeroCartao = numeroCartao;
+      userData.cartaoCredito.nomeTitular = nomeTitular;
+      userData.cartaoCredito.dataExpiracao = dataExpiracao;
+
+      await updateDoc(usuarioDocRef, userData);
+
+      // eslint-disable-next-line max-len
+      response.send("Cartão de crédito cadastrado com sucesso");
+    } catch (error) {
+      console.error("Erro ao cadastrar cartão de crédito:", error);
+      // eslint-disable-next-line max-len
+      response.status(500).send("Erro ao cadastrar cartão de crédito. Por favor, verifique os dados inseridos e tente novamente.");
+    }
+  });
+
