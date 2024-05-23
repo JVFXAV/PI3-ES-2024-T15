@@ -256,10 +256,10 @@ class HomeActivity : AppCompatActivity() {
 
         val opcoesLocacaoArray = unidade.opcoesLocacao.keys.map { chave ->
             val isDisponivel = when (chave) {
-                "dia" -> horaAtual in 7..8 // Opção "dia" disponível entre 07:00 e 08:00
+                "dia" -> (horaAtual == 7 && minutosAtual <= 59)
                 "2h" -> (horaAtual < 16 || (horaAtual == 16 && minutosAtual == 0)) // Opção "2h" disponível até 16:00 (para completar até as 18:00)
                 "1h" -> (horaAtual < 17 || (horaAtual == 17 && minutosAtual == 0)) // Opção "1h" disponível até 17:00
-                "30min" -> (horaAtual <= 17 && minutosAtual <= 30) // Opção "30min" disponível até 17:30
+                "30min" -> (horaAtual < 17 || (horaAtual <= 17 && minutosAtual <= 30)) // Opção "30min" disponível até 17:30
                 else -> true
             }
             chave to isDisponivel
